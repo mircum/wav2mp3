@@ -14,3 +14,10 @@ if(MACOSX)
             lib/macosx/libmp3lame.dylib
             DESTINATION ${INSTALL_DIR})
 endif(MACOSX)
+
+if(WINDOWS)
+    #add_library(${PROJECT_NAME} STATIC)
+    set(${PROJECT_NAME}_DEFINITIONS ${PROJECT_SOURCE_DIR}/lib/win
+            CACHE INTERNAL "${PROJECT_NAME}: Definitions" FORCE)
+
+endif(WINDOWS)

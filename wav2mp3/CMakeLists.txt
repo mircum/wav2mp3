@@ -4,7 +4,7 @@ message("${lame_INCLUDE_DIRS}")
 
 
 include_directories(
-        "${CMAKE_SOURCE_DIR}/include"
+        "${PROJECT_SOURCE_DIR}/include"
         "${lame_INCLUDE_DIRS}"
 )
 
@@ -15,5 +15,9 @@ if(MACOSX)
     target_link_libraries(wav2mp3 ${lame_DEFINITIONS}/libmp3lame.a)
 endif(MACOSX)
 
+if(WINDOWS)
+    #link_directories("${lame_DEFINITIONS}")
+    target_link_libraries(wav2mp3 ${lame_DEFINITIONS}/libmp3lame-static.lib)
+endif(WINDOWS)
 
 install(TARGETS wav2mp3 RUNTIME DESTINATION ${INSTALL_DIR})

@@ -5,7 +5,15 @@
 #include <string>
 #include <vector>
 
+#define WINDOWS @PLATFORM_NAME@
+
+#ifdef WINDOWS
+#include "dirent.h"
+#else
 #include <dirent.h>
+#endif // WINDOWS
+
+
 
 #include "lame.h"
 

@@ -40,6 +40,10 @@ if(MACOSX)
     message("this is macosx ${CMAKE_INSTALL_PREFIX}")
 endif(MACOSX)
 
+
+message("${lame_INCLUDE_DIRS}")
+message("${lame_DEFINITIONS}")
+
 # handle all folders
 add_subdirectory(lame)
 add_subdirectory(wav2mp3)

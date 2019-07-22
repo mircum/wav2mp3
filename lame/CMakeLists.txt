@@ -6,7 +6,7 @@ set(${PROJECT_NAME}_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include
 
 if(MACOSX)
     #add_library(${PROJECT_NAME} STATIC)
-    set(${PROJECT_NAME}_DEFINITIONS ${PROJECT_SOURCE_DIR}/macosx
+    set(${PROJECT_NAME}_DEFINITIONS ${PROJECT_SOURCE_DIR}/lib/macosx
             CACHE INTERNAL "${PROJECT_NAME}: Definitions" FORCE)
 
     install(FILES

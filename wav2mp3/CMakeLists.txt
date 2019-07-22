@@ -11,7 +11,7 @@ include_directories(
 add_executable(wav2mp3 src/main.cpp)
 
 if(MACOSX)
-    link_directories("${lame_DEFINITIONS}")
+    #link_directories("${lame_DEFINITIONS}")
     target_link_libraries(wav2mp3 ${lame_DEFINITIONS}/libmp3lame.a)
 endif(MACOSX)
 

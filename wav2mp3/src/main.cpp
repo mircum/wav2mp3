@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#define WINDOWS @PLATFORM_NAME@
+//#define WINDOWS @PLATFORM_NAME@
 
 #ifdef WINDOWS
 #include "dirent.h"

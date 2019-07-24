@@ -41,7 +41,6 @@ void thread_pool::addJob (std::function <void (void)> func) {
 
 void thread_pool::threadEntry (int i) {
     std::function <void (void)> job;
-
     while (1) {
         {
             std::unique_lock <std::mutex> l (lock_);
@@ -49,8 +48,7 @@ void thread_pool::threadEntry (int i) {
             while (!shutdown_&&jobs_.empty ())
                 condVar_.wait (l);
 
-            if (jobs_.empty ())
-            {
+            if (jobs_.empty ()) {
                 // No jobs to do and we are shutting down
                 std::cerr<<"Thread "<<i<<" terminates"<<std::endl;
                 return;

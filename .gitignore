@@ -36,6 +36,7 @@
 !libmp3lame.a
 !libmp3lame.dylib
 !libmp3lame.la
+!libmp3lame-static.lib
 /.vs
 /out/build/x64-Debug
 /CMakeSettings.json

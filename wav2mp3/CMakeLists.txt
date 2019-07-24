@@ -1,10 +1,6 @@
 project("wav2mp3")
 
-message("${lame_INCLUDE_DIRS}")
-
-
 include_directories(
-        #"${PROJECT_SOURCE_DIR}/include"
         "${lame_INCLUDE_DIRS}"
 )
 
@@ -16,7 +12,9 @@ if(MACOSX)
 endif(MACOSX)
 
 if(WINDOWS)
-    #link_directories("${lame_DEFINITIONS}")
+    include_directories(
+            "${dirent_win_INCLUDE_DIRS}"
+    )
     target_link_libraries(wav2mp3 ${lame_DEFINITIONS}/libmp3lame-static.lib)
 endif(WINDOWS)
 

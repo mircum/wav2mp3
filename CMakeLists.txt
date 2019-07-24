@@ -22,34 +22,30 @@ set(CXX_EXTENSIONS NO)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     set(WINDOWS TRUE)
-    add_definitions( -DPLATFORM_NAME=WINDOWS )
+    #add_definitions( -DPLATFORM_NAME=WINDOWS )
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set(LINUX TRUE)
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set(MACOSX TRUE)
 endif()
 
-#set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
-#set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/build/${SYSTEM_NAME_STR_LOWER}/${BUILD_ARCH_STR_LOWER}/base-${BUILD_ENC_LOWER}-${BUILD_TYPE_LOWER}")
 set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}")
 set(INSTALL_DIR "${CMAKE_BINARY_DIR}/bin")
 
 
-
+#test
 if(MACOSX)
     message("this is macosx ${CMAKE_INSTALL_PREFIX}")
 endif(MACOSX)
 if(WINDOWS)
     message("this is windows ${CMAKE_INSTALL_PREFIX}")
 endif(WINDOWS)
-
-
 message("${lame_INCLUDE_DIRS}")
-
 message("def: ${lame_DEFINITIONS}")
+#test
 
 # handle all folders
 add_subdirectory(lame)
+add_subdirectory(dirent_win)
 add_subdirectory(wav2mp3)
 

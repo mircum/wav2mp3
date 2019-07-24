@@ -6,15 +6,15 @@ include_directories(
 
 add_executable(wav2mp3 src/main.cpp)
 
-if(MACOSX)
+if(WAV2MP3_MACOS)
     target_link_libraries(wav2mp3 ${lame_DEFINITIONS}/libmp3lame.a)
-endif(MACOSX)
+endif(WAV2MP3_MACOS)
 
-if(WINDOWS)
+if(WAV2MP3_WINDOWS)
     include_directories(
             "${dirent_win_INCLUDE_DIRS}"
     )
     target_link_libraries(wav2mp3 ${lame_DEFINITIONS}/libmp3lame-static.lib)
-endif(WINDOWS)
+endif(WAV2MP3_WINDOWS)
 
 install(TARGETS wav2mp3 RUNTIME DESTINATION ${INSTALL_DIR})

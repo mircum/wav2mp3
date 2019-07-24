@@ -21,12 +21,12 @@ set(CXX_EXTENSIONS NO)
 
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    set(WINDOWS TRUE)
-    #add_definitions( -DPLATFORM_NAME=WINDOWS )
+    set(WAV2MP3_WINDOWS TRUE)
+    #add_definitions( -DPLATFORM_NAME=WAV2MP3_WINDOWS )
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    set(LINUX TRUE)
+    set(WAV2MP3_LINUX TRUE)
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    set(MACOSX TRUE)
+    set(WAV2MP3_MACOS TRUE)
 endif()
 
 set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}")
@@ -34,12 +34,12 @@ set(INSTALL_DIR "${CMAKE_BINARY_DIR}/bin")
 
 
 #test
-if(MACOSX)
+if(WAV2MP3_MACOS)
     message("this is macosx ${CMAKE_INSTALL_PREFIX}")
-endif(MACOSX)
-if(WINDOWS)
+endif(WAV2MP3_MACOS)
+if(WAV2MP3_WINDOWS)
     message("this is windows ${CMAKE_INSTALL_PREFIX}")
-endif(WINDOWS)
+endif(WAV2MP3_WINDOWS)
 message("${lame_INCLUDE_DIRS}")
 message("def: ${lame_DEFINITIONS}")
 #test

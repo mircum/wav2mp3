@@ -4,16 +4,14 @@ project("lame")
 set(${PROJECT_NAME}_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include
         CACHE INTERNAL "${PROJECT_NAME}: Include Directories" FORCE)
 
-if(MACOSX)
-    #add_library(${PROJECT_NAME} STATIC)
-    set(${PROJECT_NAME}_DEFINITIONS ${PROJECT_SOURCE_DIR}/lib/macosx
+if(WAV2MP3_MACOS)
+    set(${PROJECT_NAME}_DEFINITIONS ${PROJECT_SOURCE_DIR}/lib/macos
             CACHE INTERNAL "${PROJECT_NAME}: Definitions" FORCE)
 
-endif(MACOSX)
+endif(WAV2MP3_MACOS)
 
-if(WINDOWS)
-    #add_library(${PROJECT_NAME} STATIC)
+if(WAV2MP3_WINDOWS)
     set(${PROJECT_NAME}_DEFINITIONS ${PROJECT_SOURCE_DIR}/lib/win
             CACHE INTERNAL "${PROJECT_NAME}: Definitions" FORCE)
 
-endif(WINDOWS)
+endif(WAV2MP3_WINDOWS)

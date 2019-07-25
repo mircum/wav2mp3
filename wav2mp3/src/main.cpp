@@ -4,41 +4,39 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
+#include <functional>
 
 
-#include "lame.h"
 #include "dir_iterator.h"
 #include "encoder.h"
 
-// get a list with all *.wav files from specified folder
-// only the files with extension *.wav will be selected
-// verifying if a file is really wav file or not, can be done in a future version
-int getWavFilesList (std::string &dirPath, std::vector<std::string> &wavFilesList) {
-    return 0;
+#include "thread_pool.h"
+
+
+void silly (int n)
+{
+    // A silly job for demonstration purposes
+    std::cerr<<"Sleeping for "<<n<<" seconds"<<std::endl;
+    std::this_thread::sleep_for (std::chrono::seconds (n));
 }
 
-void convertToMp3 (std::string &dirPath, std::string &file) {
-
-
-}
 
 int main () {
     std::string dirPath ("/Users/mircea.gita/work/testWav/");
-    dir_iterator dirIterator(dirPath);
-    encoder wavEncoder;
-    dirIterator.iterate (wavEncoder);
+   // dir_iterator dirIterator(dirPath);
+   // encoder wavEncoder;
+   // dirIterator.iterate (wavEncoder);
 
-//
-//
-//    std::vector<std::string> wavFilesList;
-//    getWavFilesList (dirPath, wavFilesList);
-//
-//    std::vector<std::string>::iterator it = wavFilesList.begin ();
-//    //for_each (wavFilesList.begin(), wavFilesList.end(), convertToMp3);
-//    for (auto c : wavFilesList) {
-//        convertToMp3 (dirPath, c);
-//    }
 
+        // Create two threads
+    thread_pool tp (2);
+
+    // Assign them 4 jobs
+    tp.addJob (std::bind (silly, 1));
+    tp.addJob (std::bind (silly, 2));
+    tp.addJob (std::bind (silly, 3));
+    tp.addJob (std::bind (silly, 4));
 
 
     return 0;

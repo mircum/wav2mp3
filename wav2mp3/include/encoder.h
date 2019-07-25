@@ -7,19 +7,21 @@
 
 #include <string>
 
-
+class thread_pool;
 class encoder final {
 public:
-    encoder();
+    encoder(thread_pool &tPool);
     int encode (const std::string &filePath);
 
 protected:
+    //void createInstances
+    int doEncode(const std::string &filePath);
     std::string getFileExt(const std::string& filePath);
     bool validate (const std::string &filePath);
 
 
 private:
-//    std::string filePath;
+    thread_pool &tPool_;
 };
 
 

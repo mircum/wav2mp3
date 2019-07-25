@@ -45,7 +45,7 @@ void thread_pool::threadEntry (int i) {
         {
             std::unique_lock <std::mutex> l (lock_);
 
-            while (!shutdown_&&jobs_.empty ())
+            while (!shutdown_ && jobs_.empty ())
                 condVar_.wait (l);
 
             if (jobs_.empty ()) {

@@ -2,12 +2,15 @@
 // Created by Mircea Gita on 2019-07-24.
 //
 
+#include <functional>
+
 #include "encoder.h"
 #include "lame.h"
+#include "thread_pool.h"
 
 using namespace std;
 
-encoder::encoder () {
+encoder::encoder (thread_pool &tPool) : tPool_ (tPool) {
 
 }
 
@@ -15,6 +18,13 @@ encoder::encoder () {
 int encoder::encode (const string &filePath) {
     if (!validate (filePath))
         return 0;
+
+    tPool_.addJob (bind (&encoder::doEncode, this, filePath));
+
+    return 0;
+}
+
+int encoder::doEncode (const std::string &filePath) {
 
     printf ("%s \n", filePath.c_str ());
     int read, write;
@@ -49,8 +59,6 @@ int encoder::encode (const string &filePath) {
     lame_close(lame);
     fclose(mp3);
     fclose(pcm);
-
-
     return 0;
 }
 
@@ -72,4 +80,5 @@ bool encoder::validate (const std::string &filePath) {
         return true;
     return false;
 }
+
 

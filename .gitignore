@@ -40,3 +40,4 @@
 /.vs
 /out
 /CMakeSettings.json
+/cmake-build-debug

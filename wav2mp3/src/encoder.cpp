@@ -64,6 +64,8 @@ string encoder::getFileExt(const string& filePath) {
     return("");
 }
 
+// only the files with extension *.wav will be selected
+// verifying the file header to check if a file is really wav or not, can be done in a future version
 bool encoder::validate (const std::string &filePath) {
     string ext = getFileExt (filePath);
     if (ext == "wav")

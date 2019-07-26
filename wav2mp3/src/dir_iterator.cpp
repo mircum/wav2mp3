@@ -9,14 +9,14 @@
 
 using namespace std;
 
-dir_iterator::dir_iterator (const string &_dirPath) :
+file_iterator::file_iterator (const string &_dirPath) :
 _dirPath (_dirPath) {
 }
 
-dir_iterator::~dir_iterator () {
+file_iterator::~file_iterator () {
 }
 
-int dir_iterator::iterate (encoder &encoder) {
+int file_iterator::iterate (encoder &encoder) {
     DIR *dir = opendir (_dirPath.c_str ());
     struct dirent *entry;
     if (dir != nullptr) {

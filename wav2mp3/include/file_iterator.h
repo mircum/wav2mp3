@@ -11,7 +11,7 @@ class encoder;
 class file_iterator final {
 public:
     //dir_iterator (std::string &dirPath);
-    file_iterator (const std::string &_dirPath);
+    file_iterator (const std::string &dir_path);
     int iterate (encoder &encoder);
 
     ~file_iterator ();
@@ -21,7 +21,7 @@ private:
     file_iterator () = delete;
 
 private:
-    std::string _dirPath;
+    std::string dir_path_;
 
 };
 

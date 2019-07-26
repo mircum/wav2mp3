@@ -4,20 +4,20 @@
 
 #include <dirent.h>
 
-#include "dir_iterator.h"
+#include "file_iterator.h"
 #include "encoder.h"
 
 using namespace std;
 
-file_iterator::file_iterator (const string &_dirPath) :
-_dirPath (_dirPath) {
+file_iterator::file_iterator (const string &dir_path) :
+dir_path_ (dir_path) {
 }
 
 file_iterator::~file_iterator () {
 }
 
 int file_iterator::iterate (encoder &encoder) {
-    DIR *dir = opendir (_dirPath.c_str ());
+    DIR *dir = opendir (dir_path_.c_str ());
     struct dirent *entry;
     if (dir != nullptr) {
 
@@ -26,7 +26,7 @@ int file_iterator::iterate (encoder &encoder) {
             if (entry->d_type == DT_DIR)
                 continue;
 
-            string filePath = _dirPath + entry->d_name;
+            string filePath = dir_path_ + entry->d_name;
             encoder.encode (filePath.c_str());
         }
         closedir (dir);

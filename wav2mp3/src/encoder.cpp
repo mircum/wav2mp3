@@ -3,6 +3,7 @@
 //
 
 #include <functional>
+#include <stdio.h>
 
 #include "encoder.h"
 #include "lame.h"

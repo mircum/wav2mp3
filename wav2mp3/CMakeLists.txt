@@ -5,13 +5,14 @@ include_directories(
         "${lame_INCLUDE_DIRS}"
 )
 
-add_executable(wav2mp3  src/main.cpp
-        src/file_iterator.cpp
-        include/file_iterator.h
-                        src/encoder.cpp 
-                        include/encoder.h
-                        src/thread_pool.cpp 
-                        include/thread_pool.h
+add_executable(wav2mp3
+        src/main.cpp
+        src/dir_container.cpp
+        include/dir_container.h
+        src/encoder.cpp
+        include/encoder.h
+        src/thread_pool.cpp
+        include/thread_pool.h
 )
 
 if(WAV2MP3_MACOS)

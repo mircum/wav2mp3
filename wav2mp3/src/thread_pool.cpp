@@ -2,60 +2,58 @@
 // Created by Mircea Gita on 2019-07-24.
 //
 
-#include <functional>
 #include <iostream>
 
 #include "thread_pool.h"
 
-
 using namespace std;
 
-thread_pool::thread_pool (unsigned int nbThreads) : shutdown_ (false) {
-    threads_.reserve (nbThreads);
-    for (int i = 0; i<nbThreads; ++i)
-        threads_.emplace_back (bind (&thread_pool::threadEntry, this, i));
+thread_pool::thread_pool (unsigned int nt) : shutdown_ (false) {
+    threads_.reserve (nt);
+    for (int i = 0; i<nt; ++i)
+        threads_.emplace_back (bind (&thread_pool::thread_entry, this, i));
 }
 
 thread_pool::~thread_pool () {
     {
         // Unblock any threads and tell them to stop
-        std::unique_lock <std::mutex> l (lock_);
+        unique_lock <mutex> l (lock_);
 
         shutdown_ = true;
-        condVar_.notify_all ();
+        cond_var_.notify_all ();
     }
 
     // Wait for all threads to stop
-    std::cerr<<"Joining threads"<<std::endl;
+    cerr << "Joining threads" << endl;
     for (auto &thread:threads_)
         thread.join ();
 }
 
-void thread_pool::addJob (std::function <void (void)> func) {
-    // Place a job on the queu and unblock a thread
-    std::unique_lock <std::mutex> l (lock_);
+void thread_pool::add_job (function<void (void)> func) {
+    // Place a job on the queue and unblock a thread
+    unique_lock <mutex> l (lock_);
 
-    jobs_.emplace (std::move (func));
-    condVar_.notify_one ();
+    jobs_.emplace (move (func));
+    cond_var_.notify_one ();
 }
 
-void thread_pool::threadEntry (int i) {
-    std::function <void (void)> job;
-    while (1) {
+void thread_pool::thread_entry (int i) {
+    function <void (void)> job;
+    while (true) {
         {
-            std::unique_lock <std::mutex> l (lock_);
+            unique_lock <mutex> l (lock_);
 
             while (!shutdown_ && jobs_.empty ())
-                condVar_.wait (l);
+                cond_var_.wait (l);
 
             if (jobs_.empty ()) {
                 // No jobs to do and we are shutting down
-                std::cerr<<"Thread "<<i<<" terminates"<<std::endl;
+                cerr << "Thread " << i << " terminates" << endl;
                 return;
             }
 
-            std::cerr<<"Thread "<<i<<" does a job"<<std::endl;
-            job = std::move (jobs_.front ());
+            cerr << "Thread " << i << " does a job" << endl;
+            job = move (jobs_.front ());
             jobs_.pop ();
         }
         // Do the job without holding any locks

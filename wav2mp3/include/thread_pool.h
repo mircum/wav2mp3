@@ -7,20 +7,24 @@
 #include <vector>
 #include <functional>
 
-
-
 class thread_pool {
 public:
-    thread_pool (unsigned int nbThreads);
+    explicit thread_pool (unsigned int nt);
     ~thread_pool ();
-    void addJob (std::function <void (void)> func);
+    void add_job (std::function<void (void)> func);
+
+    thread_pool () = delete;
+    thread_pool (const thread_pool &) = delete;
+    thread_pool (thread_pool &&) = delete;
+    thread_pool & operator= (const thread_pool &) = delete;
+    thread_pool & operator= (thread_pool &&) = delete;
 
 private:
-    void threadEntry (int i);
+    void thread_entry (int i);
 
 private:
     std::mutex lock_;
-    std::condition_variable condVar_;
+    std::condition_variable cond_var_;
     bool shutdown_;
     std::vector <std::thread> threads_;
     std::queue <std::function <void (void)>> jobs_;

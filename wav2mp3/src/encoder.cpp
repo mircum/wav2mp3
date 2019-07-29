@@ -3,7 +3,7 @@
 //
 
 #include <functional>
-#include <stdio.h>
+#include <cstdio>
 
 #include "encoder.h"
 #include "lame.h"
@@ -20,7 +20,7 @@ int encoder::encode (const string &filePath) {
     if (!validate (filePath))
         return 0;
 
-    tPool_.addJob (bind (&encoder::doEncode, this, filePath));
+    tPool_.add_job (bind (&encoder::doEncode, this, filePath));
 
     return 0;
 }

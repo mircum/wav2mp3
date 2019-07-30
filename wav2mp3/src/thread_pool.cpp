@@ -17,7 +17,7 @@ thread_pool::thread_pool (unsigned int nt) : shutdown_ (false) {
 thread_pool::~thread_pool () {
     {
         // Unblock any threads and tell them to stop
-        unique_lock <mutex> l (lock_);
+        unique_lock<mutex> l (lock_);
 
         shutdown_ = true;
         cond_var_.notify_all ();
@@ -31,7 +31,7 @@ thread_pool::~thread_pool () {
 
 void thread_pool::add_job (function<void (void)> func) {
     // Place a job on the queue and unblock a thread
-    unique_lock <mutex> l (lock_);
+    unique_lock<mutex> l (lock_);
 
     jobs_.emplace (move (func));
     cond_var_.notify_one ();
@@ -41,7 +41,7 @@ void thread_pool::thread_entry (int i) {
     function <void (void)> job;
     while (true) {
         {
-            unique_lock <mutex> l (lock_);
+            unique_lock<mutex> l (lock_);
 
             while (!shutdown_ && jobs_.empty ())
                 cond_var_.wait (l);

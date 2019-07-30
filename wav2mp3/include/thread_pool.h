@@ -7,7 +7,7 @@
 #include <vector>
 #include <functional>
 
-class thread_pool {
+class thread_pool final {
 public:
     explicit thread_pool (unsigned int nt);
     ~thread_pool ();

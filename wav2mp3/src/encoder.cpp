@@ -2,25 +2,42 @@
 // Created by Mircea Gita on 2019-07-24.
 //
 
-#include <functional>
-#include <cstdio>
+//#include <functional>
+//#include <cstdio>
+
+#include <fstream>
+
+#include <encoder.h>
 
 #include "encoder.h"
-#include "lame.h"
-#include "thread_pool.h"
+
 
 using namespace std;
 
-encoder::encoder (thread_pool &tPool) : tPool_ (tPool) {
+encoder::encoder (const std::string &file_path) :
+file_path_ (file_path) {
+
+    lame_ = lame_init ();
+    lame_set_quality (lame_, 5);
+    lame_set_in_samplerate (lame_, 44100);
+    lame_set_VBR (lame_, vbr_default);
+    lame_init_params (lame_);
+
+    in_.open (file_path.c_str());
+//    in.
 
 }
 
+encoder::~encoder () {
+    lame_close (lame_);
+
+}
 
 int encoder::encode (const string &filePath) {
     if (!validate (filePath))
         return 0;
 
-    tPool_.add_job (bind (&encoder::doEncode, this, filePath));
+    doEncode (filePath);
 
     return 0;
 }
@@ -57,7 +74,6 @@ int encoder::doEncode (const std::string &filePath) {
         fwrite(mp3_buffer, write, 1, mp3);
     } while (read != 0);
 
-    lame_close(lame);
     fclose(mp3);
     fclose(pcm);
     return 0;
@@ -81,5 +97,4 @@ bool encoder::validate (const std::string &filePath) {
         return true;
     return false;
 }
-
 

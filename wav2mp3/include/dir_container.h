@@ -8,11 +8,6 @@
 #include <string>
 #include <dirent.h>
 
-//struct dir_error {
-//    dir_error (std::string &e) : e_(e) {};
-//    std::string e_;
-//};
-
 class dir_container final {
 
 public:

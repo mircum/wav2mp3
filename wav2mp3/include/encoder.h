@@ -6,22 +6,32 @@
 #define WAV2MP3_ENCODER_H
 
 #include <string>
+#include <fstream>
+#include "lame.h"
 
 class thread_pool;
 class encoder final {
 public:
-    encoder(thread_pool &tPool);
-    int encode (const std::string &filePath);
+    explicit encoder(const std::string &file_path);
+    ~encoder();
+    encoder () = delete;
+    encoder (const encoder &) = delete;
+    encoder (encoder &&) = delete;
+    encoder & operator= (const encoder &) = delete;
+    encoder & operator= (encoder &&) = delete;
+
+    static int encode (const std::string &filePath);
 
 protected:
-    //void createInstances
-    int doEncode(const std::string &filePath);
-    std::string getFileExt(const std::string& filePath);
-    bool validate (const std::string &filePath);
-
+    static int doEncode(const std::string &filePath);
+    static std::string getFileExt(const std::string& filePath);
+    static bool validate (const std::string &filePath);
 
 private:
-    thread_pool &tPool_;
+    std::string file_path_;
+    lame_t lame_;
+    std::ifstream in_;
+    std::ofstream out_;
 };
 
 

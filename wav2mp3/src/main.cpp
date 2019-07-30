@@ -12,7 +12,7 @@
 // WAVE file header format
 struct HEADER {
     unsigned char riff[4];                      // RIFF string
-    unsigned int overall_size   ;               // overall size of file in bytes
+    unsigned int overall_size;                  // overall size of file in bytes
     unsigned char wave[4];                      // WAVE string
     unsigned char fmt_chunk_marker[4];          // fmt string with trailing null char
     unsigned int length_of_fmt;                 // length of the format data
@@ -175,7 +175,7 @@ void WavReader (const char* fileName, const char* fileToSave)
         scanf("%c", &c);
         if (c == 'Y' || c == 'y') {
             long i =0;
-            char data_buffer[size_of_each_sample];
+            char data_buffer[1000];
             bool  size_is_correct = true;
 
             // make sure that the bytes-per-sample is completely divisible by num.of channels
@@ -318,6 +318,7 @@ const char kPathSeparator =
 using namespace std;
 
 int main (int argc, char *argv[]) {
+    argc = 2;
 
     if (argc<2) {
         cerr << "Insufficient parameters. Usage: wav2mp3 path/to/dir" << endl;
@@ -334,17 +335,19 @@ int main (int argc, char *argv[]) {
 
 //    encoder enc;
 
-        string dir_path (argv[1]);
+        //string dir_path (argv[1]);
+        string dir_path ("C:\\workdir\\wav_samples");
         cout << "Encoding wav files in " << dir_path << " directory." << endl;
         dir_container dc(dir_path);
         for (auto cit : dc) {
             if ((*cit).d_type != DT_REG)
                 continue;
             string file_path (dir_path + kPathSeparator + (*cit).d_name);
-            WavReader(file_path.c_str(), "list.dat");
+            //WavReader(file_path.c_str(), "list.dat");
             //tp.add_job ();
             //tp.add_job (bind (encoder::encode, file_path));
             //encoder::encode (file_path);
+            encoder enc (file_path);
 
             //cout << file_path << endl;
         }

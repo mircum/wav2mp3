@@ -13,6 +13,8 @@ add_executable(wav2mp3
         include/encoder.h
         src/thread_pool.cpp
         include/thread_pool.h
+        src/wave_file.cpp
+        include/wave_file.h
 )
 
 if(WAV2MP3_MACOS)

@@ -4,9 +4,6 @@
 
 #include <iostream>
 
-#include <dirent.h>
-#include <dir_container.h>
-
 #include "dir_container.h"
 #include "encoder.h"
 

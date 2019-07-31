@@ -11,6 +11,10 @@
 class dir_container final {
 
 public:
+    struct entry {
+        std::string name_;
+        bool is_file_;
+    };
     class const_iterator {
     public:
         const_iterator ();
@@ -19,7 +23,7 @@ public:
         const_iterator & operator= (const const_iterator &other);
         const_iterator & operator= (const_iterator &&other) noexcept;
         explicit const_iterator (DIR *dir);
-        const struct dirent * operator*() const;
+        struct entry operator*() const;
         const_iterator &operator++();
         bool operator!=(const const_iterator &other) const;
 

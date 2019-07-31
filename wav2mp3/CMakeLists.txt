@@ -15,7 +15,7 @@ add_executable(wav2mp3
         include/thread_pool.h
         src/wave_header.cpp
         include/wave_header.h
-)
+        include/logger.h src/logger.cpp)
 
 if(WAV2MP3_MACOS)
     target_link_libraries(wav2mp3 ${lame_DEFINITIONS}/libmp3lame.a)

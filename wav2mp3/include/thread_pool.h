@@ -23,7 +23,7 @@ private:
     void thread_entry (int i);
 
 private:
-    std::mutex lock_;
+    std::mutex mutex_;
     std::condition_variable cond_var_;
     bool shutdown_;
     std::vector <std::thread> threads_;

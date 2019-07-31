@@ -5,33 +5,77 @@
 //#include <functional>
 //#include <cstdio>
 
-#include <fstream>
+#include <sstream>
+#include <thread>
+#include <encoder.h>
 
+
+#include "logger.h"
 #include "encoder.h"
 #include "wave_header.h"
 
+
+const char path_separator =
+#ifdef _WIN32
+        '\\';
+#else
+        '/';
+#endif
+
 using namespace std;
 
-encoder::encoder (const std::string &file_path) :
-file_path_ (file_path) {
+encoder::encoder (const std::string &dir_path, const std::string &file_name) :
+in_ (nullptr),
+out_ (nullptr),
+lame_ (nullptr) {
+    // save thread id in a string to identify messages
+    stringstream ss;
+    ss << this_thread::get_id();
+    th_id_ = ss.str() + "-> ";
 
-//    wave_file_ (wave_header(file_path)),
+    logger::log (th_id_ + "Encoding file " + file_name);
+
+    string file_path = dir_path + path_separator + file_name;
+
+    // open input file and check if it is a wave file
+    in_ = fopen(file_path.c_str(), "rb");
+    if (in_ == nullptr) {
+        throw system_error(ENOENT, generic_category (), "Input FILE could not be opened");
+    }
+
+    wave_header wh(in_);
+    if (!wh.is_wave ()) {
+        logger::error (th_id_ + "ERROR: Only canonical WAVE format is supported ");
+        return;
+    }
+    if (!wh.is_pcm ()) {
+        logger::error (th_id_ + "ERROR: Only PCM audio format is supported");
+        return;
+    }
+
+//    string out = get_out_file_name (file_name);
+//    file_path = dir_path + path_separator + out;
+//    out_ = fopen (file_path.c_str(), "wb");
+
+    // create and init lame;
     lame_ = lame_init ();
+    if (lame_ == nullptr) {
+
+    }
     lame_set_quality (lame_, 5);
-////    lame_set_in_samplerate (lame_, wave_file_.sample_rate ());
-////    unsigned int nc = wave_file_.channels ();
-//    lame_set_num_channels (lame_, nc);
+    lame_set_in_samplerate (lame_, wh.sample_rate ());
+    unsigned int nc = wh.channels ();
+    lame_set_num_channels (lame_, nc);
     //lame_set_mode
     lame_set_VBR (lame_, vbr_default);
     lame_init_params (lame_);
-
-    in_.open (file_path.c_str());
-//    in.
 
 }
 
 encoder::~encoder () {
     lame_close (lame_);
+    fclose (out_);
+    fclose (in_);
 
 }
 
@@ -98,5 +142,14 @@ bool encoder::validate (const std::string &filePath) {
     if (ext == "wav")
         return true;
     return false;
+}
+
+std::string encoder::get_out_file_name (const std::string &file_name) {
+    size_t pos = file_name.rfind ('.', file_name.length ());
+    if (pos != string::npos) {
+        return(file_name.substr ( 0, pos) + ".mp3");
+    }
+
+    return std::string ();
 }
 

@@ -14,7 +14,7 @@ wave_header::wave_header (FILE *file) {
         throw invalid_argument("FILE cannot be nullptr");
     }
     
-    int read = 0;
+    size_t read = 0;
     unsigned char buffer4[4];
     unsigned char buffer2[2];
 
@@ -24,9 +24,9 @@ wave_header::wave_header (FILE *file) {
 
     // convert little endian to big endian 4 byte int
     header_.overall_size =   buffer4[0]|
-                            (buffer4[1]<<8)|
-                            (buffer4[2]<<16)|
-                            (buffer4[3]<<24);
+                            (buffer4[1]<<8u)|
+                            (buffer4[2]<<16u)|
+                            (buffer4[3]<<24u);
 
     read = fread (header_.wave, sizeof (header_.wave), 1, file);
 
@@ -35,41 +35,41 @@ wave_header::wave_header (FILE *file) {
     read = fread (buffer4, sizeof (buffer4), 1, file);
     // convert little endian to big endian 4 byte integer
     header_.length_of_fmt =  buffer4[0]|
-                            (buffer4[1]<<8)|
-                            (buffer4[2]<<16)|
-                            (buffer4[3]<<24);
+                            (buffer4[1]<<8u)|
+                            (buffer4[2]<<16u)|
+                            (buffer4[3]<<24u);
 
     read = fread (buffer2, sizeof (buffer2), 1, file);
-    header_.format_type = buffer2[0]|(buffer2[1]<<8);
+    header_.format_type = buffer2[0]|(buffer2[1]<<8u);
 
     read = fread (buffer2, sizeof (buffer2), 1, file);
-    header_.channels = buffer2[0]|(buffer2[1]<<8);
+    header_.channels = buffer2[0]|(buffer2[1]<<8u);
  
     read = fread (buffer4, sizeof (buffer4), 1, file);
     header_.sample_rate = buffer4[0]|
-                        (buffer4[1]<<8)|
-                        (buffer4[2]<<16)|
-                        (buffer4[3]<<24);
+                        (buffer4[1]<<8u)|
+                        (buffer4[2]<<16u)|
+                        (buffer4[3]<<24u);
 
     read = fread (buffer4, sizeof (buffer4), 1, file);
     header_.byterate =   buffer4[0]|
-                        (buffer4[1]<<8)|
-                        (buffer4[2]<<16)|
-                        (buffer4[3]<<24);
+                        (buffer4[1]<<8u)|
+                        (buffer4[2]<<16u)|
+                        (buffer4[3]<<24u);
 
     read = fread (buffer2, sizeof (buffer2), 1, file);
-    header_.block_align = buffer2[0]|(buffer2[1]<<8);
+    header_.block_align = buffer2[0]|(buffer2[1]<<8u);
 
     read = fread (buffer2, sizeof (buffer2), 1, file);
-    header_.bits_per_sample = buffer2[0]|(buffer2[1]<<8);
+    header_.bits_per_sample = buffer2[0]|(buffer2[1]<<8u);
 
     read = fread (header_.data_chunk_header, sizeof (header_.data_chunk_header), 1, file);
 
     read = fread (buffer4, sizeof (buffer4), 1, file);
     header_.data_size =  buffer4[0]|
-                        (buffer4[1]<<8)|
-                        (buffer4[2]<<16)|
-                        (buffer4[3]<<24);
+                        (buffer4[1]<<8u)|
+                        (buffer4[2]<<16u)|
+                        (buffer4[3]<<24u);
 
     /*
     // calculate no.of samples
@@ -86,9 +86,6 @@ wave_header::wave_header (FILE *file) {
     */
 }
 
-wave_header::~wave_header () {
-}
-
 unsigned int wave_header::size ()
 {
     return header_.overall_size;
@@ -97,12 +94,12 @@ unsigned int wave_header::size ()
 bool wave_header::is_wave ()
 {
     // the canonical WAVE format starts with the RIFF header
-    return strstr((char*)header_.riff, "RIFF") != nullptr ? true : false;
+    return strstr((char*)header_.riff, "RIFF") != nullptr;
 }
 
 bool wave_header::is_pcm ()
 {
-    return (header_.format_type == 1) ? true : false;
+    return header_.format_type == 1;
 }
 
 unsigned int wave_header::channels ()

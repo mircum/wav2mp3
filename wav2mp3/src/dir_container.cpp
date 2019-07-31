@@ -2,8 +2,6 @@
 // Created by Mircea Gita on 2019-07-24.
 //
 
-#include <iostream>
-
 #include "dir_container.h"
 #include "encoder.h"
 
@@ -85,8 +83,11 @@ entry_ (nullptr) {
     }
 }
 
-const struct dirent * dir_container::const_iterator::operator* () const {
-    return entry_;
+struct dir_container::entry dir_container::const_iterator::operator* () const {
+    entry ent;
+    ent.name_ = entry_->d_name;
+    ent.is_file_ = (entry_->d_type == DT_REG);
+    return ent;
 }
 
 dir_container::const_iterator &dir_container::const_iterator::operator++ () {

@@ -24,7 +24,7 @@ class wave_header final {
 
 public:
     explicit wave_header (FILE *file);
-    ~wave_header ();
+    ~wave_header () = default;
     unsigned int size ();
     bool is_wave ();
     bool is_pcm ();

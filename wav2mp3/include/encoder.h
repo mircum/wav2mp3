@@ -12,7 +12,7 @@
 class wave_header;
 class encoder final {
 public:
-    explicit encoder(const std::string &file_path);
+    explicit encoder (const std::string &dir_path, const std::string &file_name);
     ~encoder();
     encoder () = delete;
     encoder (const encoder &) = delete;
@@ -20,19 +20,20 @@ public:
     encoder & operator= (const encoder &) = delete;
     encoder & operator= (encoder &&) = delete;
 
-    static int encode (const std::string &filePath);
+    int encode (const std::string &filePath);
 
 protected:
-    static int doEncode(const std::string &filePath);
-    static std::string getFileExt(const std::string& filePath);
-    static bool validate (const std::string &filePath);
+    int doEncode(const std::string &filePath);
+    std::string getFileExt(const std::string& filePath);
+    std::string get_out_file_name (const std::string &file_name);
+    bool validate (const std::string &filePath);
 
 private:
 //    wave_header &wave_file_;
-    std::string file_path_;
+    std::string th_id_;
     lame_t lame_;
-    std::ifstream in_;
-    std::ofstream out_;
+    FILE *in_;
+    FILE *out_;
 };
 
 

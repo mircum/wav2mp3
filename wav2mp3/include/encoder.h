@@ -20,13 +20,10 @@ public:
     encoder & operator= (const encoder &) = delete;
     encoder & operator= (encoder &&) = delete;
 
-    int encode (const std::string &filePath);
+    int encode ();
 
 protected:
-    int doEncode(const std::string &filePath);
-    std::string getFileExt(const std::string& filePath);
     std::string get_out_file_name (const std::string &file_name);
-    bool validate (const std::string &filePath);
 
 private:
 //    wave_header &wave_file_;

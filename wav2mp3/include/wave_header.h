@@ -31,7 +31,6 @@ public:
     unsigned int channels ();
     unsigned int sample_rate ();
     unsigned int bits_per_sample ();
-    void *buffer ();
 
     wave_header () = delete;
     wave_header (const wave_header &) = delete;

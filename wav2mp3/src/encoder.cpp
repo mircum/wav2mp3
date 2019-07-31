@@ -67,9 +67,13 @@ lame_ (nullptr) {
     lame_set_in_samplerate (lame_, wh.sample_rate ());
     unsigned int nc = wh.channels ();
     lame_set_num_channels (lame_, nc);
-    //lame_set_mode
-    lame_set_VBR (lame_, vbr_default);
-    lame_init_params (lame_);
+    MPEG_mode mode = MONO;
+    if (nc==2)
+        mode = STEREO;
+    lame_set_mode (lame_, mode);
+//    lame_set_VBR (lame_, vbr_default);
+    lame_init_params (lame_);//TODO: check return
+//    lame_print_config (lame_);
 }
 
 encoder::~encoder () {
@@ -82,69 +86,41 @@ encoder::~encoder () {
 
 }
 
-int encoder::encode (const string &filePath) {
-    if (!validate (filePath))
-        return 0;
+#define PCM_BUF_SIZE 1024
+#define MP3_SIZE 8480//8192
 
-    doEncode (filePath);
+//TODO: all mp3 should be removed, otherwise there might be a situation when a thread is opening for read and the other for write
 
-    return 0;
-}
+int encoder::encode () {
 
-int encoder::doEncode (const std::string &filePath) {
+    int n_bytes_read;
+    int n_bytes_write;
+    int i;
 
-    printf ("%s \n", filePath.c_str ());
-    int read, write;
-
-    std::string input (filePath);
-    std::string output (filePath + ".mp3");
-
-    FILE *pcm = fopen(input.c_str(), "rb");
-    FILE *mp3 = fopen(output.c_str(), "wb");
-
-    const int PCM_SIZE = 8192;
-    const int MP3_SIZE = 8192;
-
-    short int pcm_buffer[PCM_SIZE*2];
+    short pcm_buffer_s[PCM_BUF_SIZE];
+    unsigned char pcm_buffer[PCM_BUF_SIZE];
     unsigned char mp3_buffer[MP3_SIZE];
 
-    lame_t lame = lame_init();
-    lame_set_quality(lame, 5);
-    lame_set_in_samplerate(lame, 44100);
-    lame_set_VBR(lame, vbr_default);
-    lame_init_params(lame);
+    fseek (in_, 72, SEEK_SET);
 
     do {
-        read = fread(pcm_buffer, 2*sizeof(short int), PCM_SIZE, pcm);
-        if (read == 0)
-            write = lame_encode_flush(lame, mp3_buffer, MP3_SIZE);
-        else
-            write = lame_encode_buffer_interleaved(lame, pcm_buffer, read, mp3_buffer, MP3_SIZE);
-        fwrite(mp3_buffer, write, 1, mp3);
-    } while (read != 0);
+        n_bytes_read = fread (pcm_buffer, sizeof (char), PCM_BUF_SIZE, in_);
+        for (i = 0; i<n_bytes_read; i++) {
+            pcm_buffer_s[i] = (short)(pcm_buffer[i]-0x80)<<8;
+        }
+        if (n_bytes_read==0) {
+            n_bytes_write = lame_encode_flush (lame_, mp3_buffer, MP3_SIZE);
+        }
+        else {
+//            n_bytes_write = lame_encode_buffer (lame_, pcm_buffer_s, NULL,
+//                                                n_bytes_read, mp3_buffer, MP3_SIZE);
+            n_bytes_write = lame_encode_buffer_interleaved (lame_, pcm_buffer_s,
+                                                n_bytes_read, mp3_buffer, MP3_SIZE);
+        }
+        fwrite (mp3_buffer, sizeof (char), n_bytes_write, out_);
+    } while (n_bytes_read>0);
 
-    fclose(mp3);
-    fclose(pcm);
     return 0;
-}
-
-string encoder::getFileExt(const string& filePath) {
-
-    size_t pos = filePath.rfind('.', filePath.length());
-    if (pos != string::npos) {
-        return(filePath.substr (pos + 1, filePath.length() - pos));
-    }
-
-    return("");
-}
-
-// only the files with extension *.wav will be selected
-// verifying the file header to check if a file is really wav or not, can be done in a future version
-bool encoder::validate (const std::string &filePath) {
-    string ext = getFileExt (filePath);
-    if (ext == "wav")
-        return true;
-    return false;
 }
 
 std::string encoder::get_out_file_name (const std::string &file_name) {

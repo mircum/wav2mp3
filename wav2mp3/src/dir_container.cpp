@@ -7,7 +7,8 @@
 
 using namespace std;
 
-dir_container::dir_container (const string &dir_path) {
+dir_container::dir_container (const string &dir_path) :
+dir_ (nullptr) {
 
     dir_ = opendir (dir_path.c_str ());
     if (dir_ == nullptr) {
@@ -16,7 +17,8 @@ dir_container::dir_container (const string &dir_path) {
 }
 
 dir_container::~dir_container () {
-    closedir (dir_);
+    if (dir_)
+        closedir (dir_);
 }
 
 dir_container::const_iterator dir_container::begin () const {

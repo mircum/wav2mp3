@@ -116,8 +116,3 @@ unsigned int wave_header::bits_per_sample ()
 {
     return header_.bits_per_sample;
 }
-
-void *wave_header::buffer ()
-{
-    return nullptr;
-}

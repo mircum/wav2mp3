@@ -10,7 +10,7 @@ using namespace std;
 
 void wav2mp3 (const string &dir_path, const string &file_name) {
     encoder enc (dir_path, file_name);
-    //enc.encode ();
+    enc.encode ();
 }
 
 int main (int argc, char *argv[]) {
@@ -41,7 +41,8 @@ int main (int argc, char *argv[]) {
             dir_container::entry ent = cit;
             if (!ent.is_file_)
                 continue;
-            tp.add_job (bind (wav2mp3, dir_path, ent.name_));
+            //tp.add_job (bind (wav2mp3, dir_path, ent.name_));
+            wav2mp3 (dir_path, ent.name_);
         }
     }
     catch (exception e) {

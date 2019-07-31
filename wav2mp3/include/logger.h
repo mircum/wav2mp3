@@ -10,8 +10,10 @@
 
 class logger {
 public:
-    logger (logger const&) = delete;
-    void operator= (logger const&)  = delete;
+    logger (const logger &) = delete;
+    logger (logger &&) = delete;
+    logger &operator= (const logger &) = delete;
+    logger &operator= (logger &&) = delete;
 
     static logger &get_instance();
     static void log (const std::string &msg);

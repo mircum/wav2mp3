@@ -31,11 +31,11 @@ lame_ (nullptr) {
     // save thread id in a string to identify messages
     stringstream ss;
     ss << this_thread::get_id();
-    th_id_ = ss.str() + "-> ";
+    th_id_ = "\n"+ss.str()+"-> ";
 
-    logger::log (th_id_ + "Encoding file " + file_name);
+    logger::log (th_id_+"Input file "+file_name);
 
-    string file_path = dir_path + path_separator + file_name;
+    string file_path = dir_path+path_separator+file_name;
 
     // open input file and check if it is a wave file
     in_ = fopen(file_path.c_str(), "rb");
@@ -45,17 +45,18 @@ lame_ (nullptr) {
 
     wave_header wh(in_);
     if (!wh.is_wave ()) {
-        logger::error (th_id_ + "ERROR: Only canonical WAVE format is supported ");
+        logger::error (th_id_+file_name+"\nERROR: Not a WAVE file format");
         return;
     }
     if (!wh.is_pcm ()) {
-        logger::error (th_id_ + "ERROR: Only PCM audio format is supported");
+        logger::error (th_id_+file_name+"\nERROR: Not a PCM audio format");
         return;
     }
 
-//    string out = get_out_file_name (file_name);
-//    file_path = dir_path + path_separator + out;
-//    out_ = fopen (file_path.c_str(), "wb");
+    string out = get_out_file_name (file_name);
+    logger::log (th_id_+"Output file "+out);
+    file_path = dir_path+path_separator+out;
+    out_ = fopen (file_path.c_str(), "wb");
 
     // create and init lame;
     lame_ = lame_init ();
@@ -69,13 +70,15 @@ lame_ (nullptr) {
     //lame_set_mode
     lame_set_VBR (lame_, vbr_default);
     lame_init_params (lame_);
-
 }
 
 encoder::~encoder () {
-    lame_close (lame_);
-    fclose (out_);
-    fclose (in_);
+    if (lame_)
+        lame_close (lame_);
+    if (out_)
+        fclose (out_);
+    if (in_)
+       fclose (in_);
 
 }
 

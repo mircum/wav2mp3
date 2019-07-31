@@ -3,7 +3,7 @@
 //
 
 
-#include <exception>
+#include <stdexcept>
 
 #include "wave_header.h"
 

@@ -4,7 +4,7 @@
 #include <cstdio>
 #include <string>
 
-class wave_file final {
+class wave_header final {
     // WAVE file header format
     struct HEADER {
         unsigned char riff[4];                      // RIFF string
@@ -23,8 +23,8 @@ class wave_file final {
     };
 
 public:
-    explicit wave_file (const std::string &file_path);
-    ~wave_file ();
+    explicit wave_header (FILE *file);
+    ~wave_header ();
     unsigned int size ();
     bool is_wave ();
     bool is_pcm ();
@@ -33,13 +33,12 @@ public:
     unsigned int bits_per_sample ();
     void *buffer ();
 
-    wave_file () = delete;
-    wave_file (const wave_file &) = delete;
-    wave_file (wave_file &&) = delete;
-    wave_file &operator= (const wave_file &) = delete;
-    wave_file &operator= (wave_file &&) = delete;
+    wave_header () = delete;
+    wave_header (const wave_header &) = delete;
+    wave_header (wave_header &&) = delete;
+    wave_header &operator= (const wave_header &) = delete;
+    wave_header &operator= (wave_header &&) = delete;
 
 private:
-    FILE *file_;
     HEADER header_;
 };

@@ -76,7 +76,7 @@ dir_ (dir),
 entry_ (nullptr) {
 
     if (dir_ == nullptr) {
-        throw invalid_argument("DIR cannot be empty");
+        throw invalid_argument("DIR cannot be nullptr");
     }
 
     entry_ = readdir (dir_);

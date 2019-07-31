@@ -9,7 +9,7 @@
 #include <fstream>
 #include "lame.h"
 
-class wave_file;
+class wave_header;
 class encoder final {
 public:
     explicit encoder(const std::string &file_path);
@@ -28,7 +28,7 @@ protected:
     static bool validate (const std::string &filePath);
 
 private:
-    wave_file &wave_file_;
+//    wave_header &wave_file_;
     std::string file_path_;
     lame_t lame_;
     std::ifstream in_;

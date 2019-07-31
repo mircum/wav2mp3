@@ -8,19 +8,19 @@
 #include <fstream>
 
 #include "encoder.h"
-#include "wave_file.h"
+#include "wave_header.h"
 
 using namespace std;
 
 encoder::encoder (const std::string &file_path) :
-wave_file_ (wave_file(file_path)), 
 file_path_ (file_path) {
 
+//    wave_file_ (wave_header(file_path)),
     lame_ = lame_init ();
     lame_set_quality (lame_, 5);
-    lame_set_in_samplerate (lame_, wave_file_.sample_rate ());
-    unsigned int nc = wave_file_.channels ();
-    lame_set_num_channels (lame_, nc);
+////    lame_set_in_samplerate (lame_, wave_file_.sample_rate ());
+////    unsigned int nc = wave_file_.channels ();
+//    lame_set_num_channels (lame_, nc);
     //lame_set_mode
     lame_set_VBR (lame_, vbr_default);
     lame_init_params (lame_);

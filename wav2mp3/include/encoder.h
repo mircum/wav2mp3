@@ -20,13 +20,14 @@ public:
     encoder & operator= (const encoder &) = delete;
     encoder & operator= (encoder &&) = delete;
 
-    int encode ();
+    void encode ();
 
 protected:
     std::string get_out_file_name (const std::string &file_name);
 
 private:
-//    wave_header &wave_file_;
+    bool encode_;
+    std::unique_ptr<wave_header> wh_;
     std::string th_id_;
     lame_t lame_;
     FILE *in_;

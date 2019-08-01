@@ -80,8 +80,8 @@ entry_ (nullptr) {
     }
 
     entry_ = readdir (dir_);
-    if (entry_ == nullptr && errno != 0) {
-        throw runtime_error("readdir() failed");
+    if (entry_ == nullptr) {
+        throw runtime_error("readdir() failed in dir_container::const_iterator::const_iterator");
     }
 }
 
@@ -93,9 +93,10 @@ struct dir_container::entry dir_container::const_iterator::operator* () const {
 }
 
 dir_container::const_iterator &dir_container::const_iterator::operator++ () {
+    errno = 0;
     entry_ = readdir (dir_);
-    if (entry_ == nullptr && errno != 0) {
-        throw runtime_error("readdir() failed");
+    if (!entry_ && errno != 0) {
+        throw runtime_error("readdir() failed in dir_container::const_iterator::operator++");
     }
     return *this;
 }

@@ -25,6 +25,8 @@ class wave_header final {
 public:
     explicit wave_header (FILE *file);
     ~wave_header () = default;
+//    wave_header (wave_header &&);
+//    wave_header &operator= (wave_header &&);
     unsigned int size ();
     bool is_wave ();
     bool is_pcm ();
@@ -34,9 +36,7 @@ public:
 
     wave_header () = delete;
     wave_header (const wave_header &) = delete;
-    wave_header (wave_header &&) = delete;
     wave_header &operator= (const wave_header &) = delete;
-    wave_header &operator= (wave_header &&) = delete;
 
 private:
     HEADER header_;

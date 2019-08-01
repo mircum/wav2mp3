@@ -45,8 +45,16 @@ int main (int argc, char *argv[]) {
             wav2mp3 (dir_path, ent.name_);
         }
     }
+    catch (system_error e) {
+        logger::error ("ERROR: "+string(e.what ()));
+
+    }
+    catch (runtime_error e) {
+        logger::error ("ERROR: "+string(e.what ()));
+
+    }
     catch (exception e) {
-        logger::log ("exception");
+        logger::error ("ERROR: "+string(e.what ()));
     }
 
     return 0;

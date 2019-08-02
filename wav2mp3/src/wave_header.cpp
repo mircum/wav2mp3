@@ -13,6 +13,7 @@ wave_header::wave_header (FILE *file) {
     if (file == nullptr) {
         throw invalid_argument("FILE cannot be nullptr");
     }
+
     
     size_t read = 0;
     unsigned char buffer4[4];
@@ -91,7 +92,7 @@ unsigned int wave_header::size ()
     return header_.overall_size;
 }
 
-bool wave_header::is_wave ()
+bool wave_header::is_riff ()
 {
     // the canonical WAVE format starts with the RIFF header
     return strstr((char*)header_.riff, "RIFF") != nullptr;

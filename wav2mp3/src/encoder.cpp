@@ -30,7 +30,7 @@ in_ (nullptr),
 out_ (nullptr),
 lame_ (nullptr) {
 
-    // save thread id in a string to identify logs
+    // save thread id in a string to use it when logging
     stringstream ss;
     ss << this_thread::get_id();
     th_id_ = ss.str()+"-> ";
@@ -47,7 +47,7 @@ lame_ (nullptr) {
     // read wave header from input file
     std::unique_ptr<wave_header> wh1( new wave_header(in_));
     wh_ = std::move(wh1);
-    if (!wh_->is_wave ()) {
+    if (!wh_->is_riff ()) {
         logger::error (th_id_+file_name+"\nERROR: Not a RIFF WAVE file format");
         return;
     }
@@ -79,7 +79,7 @@ lame_ (nullptr) {
 //    lame_print_config (lame_);
 
     // create output file with the same name + mp3 extension
-    string out = get_out_file_name (file_name);
+    string out = resolve_out_file_name (file_name);
     logger::log (th_id_+"Output file "+out);
     file_path = dir_path+path_separator+out;
     out_ = fopen (file_path.c_str(), "wb");
@@ -104,12 +104,12 @@ encoder::~encoder () {
 
 //TODO: all mp3 should be removed, otherwise there might be a situation when a thread is opening for read and the other for write
 
-void encoder::encode () {
+void encoder::do_encode () {
     if (!encode_)
         return;
 
     int n_bytes_read;
-    int n_bytes_write;
+    int n_bytes_write = 0;
     int i;
 
     short pcm_buffer_s[PCM_BUF_SIZE];
@@ -147,7 +147,7 @@ void encoder::encode () {
     } while (n_bytes_read>0);
 }
 
-std::string encoder::get_out_file_name (const std::string &file_name) {
+std::string encoder::resolve_out_file_name (const std::string &file_name) {
     size_t pos = file_name.rfind ('.', file_name.length ());
     if (pos != string::npos) {
         return(file_name.substr ( 0, pos) + ".mp3");

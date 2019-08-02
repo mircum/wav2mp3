@@ -2,7 +2,7 @@
 // Created by Mircea Gita on 2019-07-30.
 //
 #include <cstdio>
-#include <string>
+#include <memory>
 
 class wave_header final {
     // WAVE file header format
@@ -24,19 +24,20 @@ class wave_header final {
 
 public:
     explicit wave_header (FILE *file);
+    wave_header () = delete;
     ~wave_header () = default;
-//    wave_header (wave_header &&);
-//    wave_header &operator= (wave_header &&);
+    wave_header (const wave_header &) = delete;
+    wave_header &operator= (const wave_header &) = delete;
+    wave_header (wave_header &&) = delete;
+    wave_header &operator= (wave_header &&) = delete;
+
     unsigned int size ();
-    bool is_wave ();
+    bool is_riff ();
     bool is_pcm ();
     unsigned int channels ();
     unsigned int sample_rate ();
     unsigned int bits_per_sample ();
 
-    wave_header () = delete;
-    wave_header (const wave_header &) = delete;
-    wave_header &operator= (const wave_header &) = delete;
 
 private:
     HEADER header_;

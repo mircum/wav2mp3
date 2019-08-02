@@ -20,10 +20,10 @@ public:
     encoder & operator= (const encoder &) = delete;
     encoder & operator= (encoder &&) = delete;
 
-    void encode ();
+    void do_encode ();
 
 protected:
-    std::string get_out_file_name (const std::string &file_name);
+    std::string resolve_out_file_name (const std::string &file_name);
 
 private:
     bool encode_;

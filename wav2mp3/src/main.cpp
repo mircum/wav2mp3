@@ -10,7 +10,7 @@ using namespace std;
 
 void wav2mp3 (const string &dir_path, const string &file_name) {
     encoder enc (dir_path, file_name);
-    enc.encode ();
+    enc.do_encode ();
 }
 
 int main (int argc, char *argv[]) {

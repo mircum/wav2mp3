@@ -14,7 +14,6 @@ void wav2mp3 (const string &dir_path, const string &file_name) {
 }
 
 int main (int argc, char *argv[]) {
-    //argc = 2;
 
     if (argc<2) {
         logger::error ("ERROR: Insufficient parameters. Usage: wav2mp3 path/to/dir");
@@ -41,19 +40,19 @@ int main (int argc, char *argv[]) {
             dir_container::entry ent = cit;
             if (!ent.is_file_)
                 continue;
-            //tp.add_job (bind (wav2mp3, dir_path, ent.name_));
-            wav2mp3 (dir_path, ent.name_);
+            tp.add_job (bind (wav2mp3, dir_path, ent.name_));
+            //wav2mp3 (dir_path, ent.name_);
         }
     }
-    catch (system_error e) {
+    catch (system_error &e) {
         logger::error ("ERROR: "+string(e.what ()));
 
     }
-    catch (runtime_error e) {
+    catch (runtime_error &e) {
         logger::error ("ERROR: "+string(e.what ()));
 
     }
-    catch (exception e) {
+    catch (exception &e) {
         logger::error ("ERROR: "+string(e.what ()));
     }
 

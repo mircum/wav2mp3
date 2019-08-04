@@ -46,7 +46,7 @@ protected:
     std::string resolve_out_file_name (const std::string &file_name);
 
 private:
-    bool encode_;
+    bool can_encode_;
     HEADER header_;
     std::string th_id_;
     lame_t lame_;

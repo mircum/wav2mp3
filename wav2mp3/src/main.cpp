@@ -27,11 +27,11 @@ int main (int argc, char *argv[]) {
 
         // get number of concurrent thread that can be executed
         unsigned int nt = thread::hardware_concurrency ();
-        msg = to_string(nt) + " concurrent threads possible on this system.";
+        msg = to_string (nt) + " concurrent threads possible on this system. " + to_string (nt - 1) + " will be used for encoding. \n";
         logger::log (msg);
 
 
-        dir_container dc(dir_path);
+        dir_container dc (dir_path);
         // create a thread_pool with c_threads - 1 number of threads
         // main execution thread should be considered a concurrent activity
         thread_pool tp (nt-1);
@@ -45,15 +45,15 @@ int main (int argc, char *argv[]) {
         }
     }
     catch (system_error &e) {
-        logger::error ("ERROR: "+string(e.what ()));
+        logger::error ("ERROR: " + string (e.what ()));
 
     }
     catch (runtime_error &e) {
-        logger::error ("ERROR: "+string(e.what ()));
+        logger::error ("ERROR: " + string (e.what ()));
 
     }
     catch (exception &e) {
-        logger::error ("ERROR: "+string(e.what ()));
+        logger::error ("ERROR: " + string (e.what ()));
     }
 
     return 0;

@@ -9,8 +9,8 @@ using namespace std;
 
 thread_pool::thread_pool (unsigned int nt) : shutdown_ (false) {
     threads_.reserve (nt);
-    for (int i = 0; i<nt; ++i)
-        threads_.emplace_back (bind (&thread_pool::thread_entry, this, i));
+    for (int i = 0; i < nt; ++i)
+        threads_.emplace_back (bind (&thread_pool::thread_entry, this));
 }
 
 thread_pool::~thread_pool () {
@@ -35,7 +35,7 @@ void thread_pool::add_job (function<void (void)> func) {
     cond_var_.notify_one ();
 }
 
-void thread_pool::thread_entry (int i) {
+void thread_pool::thread_entry () {
     function <void (void)> job;
     while (true) {
         {

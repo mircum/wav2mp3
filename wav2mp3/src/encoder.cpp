@@ -20,10 +20,14 @@ const char path_separator =
         '/';
 #endif
 
+#define PCM_BUF_SIZE 8192
+#define MP3_BUF_SIZE 8192
+
+
 using namespace std;
 
 encoder::encoder (const std::string &dir_path, const std::string &file_name) :
-encode_ (false),
+can_encode_ (false),
 in_ (nullptr),
 out_ (nullptr),
 lame_ (nullptr) {
@@ -37,7 +41,7 @@ lame_ (nullptr) {
     // open input file
     string file_path = dir_path + path_separator + file_name;
     in_ = fopen (file_path.c_str(), "rb");
-    if (in_ == nullptr) {
+    if (nullptr == in_) {
         throw system_error (ENOENT, generic_category (), "Input FILE could not be opened");
     }
 
@@ -48,7 +52,11 @@ lame_ (nullptr) {
         return;
     }
     if (!is_pcm ()) {
-        logger::error (th_id_ + file_name + " skipped: Not a PCM audio format");
+        logger::log (th_id_ + file_name + " skipped: Not a PCM audio format");
+        return;
+    }
+    if (2 < header_.channels) {
+        logger::log (th_id_ + file_name + " skipped: Max 2 channels supported");
         return;
     }
 
@@ -57,14 +65,14 @@ lame_ (nullptr) {
 
     // create output file with the same name + mp3 extension
     string out = resolve_out_file_name (file_name);
-    logger::log (th_id_+"Output file "+out);
-    file_path = dir_path+path_separator+out;
+    logger::log (th_id_ + "Output file " + out);
+    file_path = dir_path + path_separator + out;
     out_ = fopen (file_path.c_str(), "wb");
     if (in_ == nullptr) {
         throw runtime_error ("Output FILE could not be created");
     }
 
-    encode_ = true;
+    can_encode_ = true;
 }
 
 encoder::~encoder () {
@@ -77,9 +85,6 @@ encoder::~encoder () {
 }
 
 size_t encoder::read_wave_header () {
-    if (in_ == nullptr) {
-        throw invalid_argument("FILE cannot be nullptr");
-    }
 
     size_t read = 0;
     unsigned char buffer4[4];
@@ -140,20 +145,19 @@ size_t encoder::read_wave_header () {
     return read;
 }
 
-bool encoder::is_riff ()
-{
+bool encoder::is_riff () {
     // the canonical WAVE format starts with the RIFF header
-    return strstr((char*)header_.riff, "RIFF") != nullptr;
+    return strstr ((char*)header_.riff, "RIFF") != nullptr;
 }
 
-bool encoder::is_pcm ()
-{
-    return header_.format_type == 1;
+bool encoder::is_pcm () {
+    // this version only handles PCM format
+    return 1 == header_.format_type;
 }
 
 void encoder::init_lame () {
     lame_ = lame_init ();
-    if (lame_ == nullptr) {
+    if (nullptr == lame_) {
         throw runtime_error ("lame_init() failed");
     }
 
@@ -161,62 +165,45 @@ void encoder::init_lame () {
     lame_set_in_samplerate (lame_, header_.sample_rate);
     lame_set_num_channels (lame_, header_.channels);
     MPEG_mode mode = MONO;
-    if (header_.channels==2)
+    if (2 == header_.channels)
         mode = STEREO;
     lame_set_mode (lame_, mode);
-//    lame_set_VBR (lame_, vbr_default);
     if (-1 == lame_init_params (lame_)) {
         throw runtime_error("lame_init_params() failed");
-
     }
-//    lame_print_config (lame_);
 }
 
-
-#define PCM_BUF_SIZE 1024
-#define MP3_SIZE 1024//8192
-
 void encoder::do_encode () {
-    if (!encode_)
+    if (!can_encode_)
         return;
 
     int n_bytes_read;
     int n_bytes_write = 0;
-    int i;
 
     short pcm_buffer_s[PCM_BUF_SIZE];
-//    unsigned char pcm_buffer[PCM_BUF_SIZE];
-    unsigned char mp3_buffer[MP3_SIZE];
-
-//    long pos = ftell (in_);
-//    fseek (in_, pos, SEEK_SET);
+    unsigned char mp3_buffer[MP3_BUF_SIZE];
 
     do {
         n_bytes_read = fread (pcm_buffer_s, sizeof (short), PCM_BUF_SIZE, in_);
-//        for (i = 0; i<n_bytes_read; i++) {
-//            pcm_buffer_s[i] = (short)(pcm_buffer[i]/*-0x80*/)<<8;
-//        }
-        if (n_bytes_read == 0) {
-            n_bytes_write = lame_encode_flush (lame_, mp3_buffer, MP3_SIZE);
+        if (0 == n_bytes_read) {
+            n_bytes_write = lame_encode_flush (lame_, mp3_buffer, MP3_BUF_SIZE);
         }
         else {
-//            n_bytes_write = lame_encode_buffer (lame_, pcm_buffer_s, NULL,
-//                                                n_bytes_read, mp3_buffer, MP3_SIZE);
-            int bytes = n_bytes_read;
-            if (header_.channels == 2) {
-                bytes *= 0.5;
+            if (2 == header_.channels) {
                 n_bytes_write = lame_encode_buffer_interleaved (lame_, pcm_buffer_s,
-                                                                bytes, mp3_buffer, MP3_SIZE);
-
+                                                                n_bytes_read * 0.5, mp3_buffer, MP3_BUF_SIZE);
             }
-            else if (header_.channels == 1) {
+            else if (1 == header_.channels) {
                 n_bytes_write = lame_encode_buffer (lame_, pcm_buffer_s, nullptr,
-                                                bytes, mp3_buffer, MP3_SIZE);
-
+                                                n_bytes_read, mp3_buffer, MP3_BUF_SIZE);
             }
         }
+        if (0 > n_bytes_write) {
+            logger::error (th_id_ + " ERROR: encoding failed. Skipping the rest of the file");
+            break;
+        }
         fwrite (mp3_buffer, sizeof (char), n_bytes_write, out_);
-    } while (n_bytes_read>0);
+    } while (n_bytes_read > 0);
 }
 
 std::string encoder::resolve_out_file_name (const std::string &file_name) {

@@ -20,7 +20,7 @@ public:
     thread_pool & operator= (thread_pool &&) = delete;
 
 private:
-    void thread_entry (int i);
+    void thread_entry ();
 
 private:
     std::mutex mutex_;

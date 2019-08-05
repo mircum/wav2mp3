@@ -32,7 +32,7 @@
 *.app
 
 /.idea
-!libmp3lame.0.dylib
+!wav2mp3.exe
 !libmp3lame.a
 !libmp3lame.dylib
 !libmp3lame.la

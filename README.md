@@ -13,6 +13,10 @@ Some sample wave files can be found here: https://drive.google.com/drive/folders
 
 
 ## Compile it yourself
+##### Windows
+Install Visual Studio Community 2019, open the wav2mp3 folder and compile.
+##### Linux and/or MacOS
+Install Clion, open the wav2mp3 folder and compile.
 
 ## References
 * Thread Pool: https://stackoverflow.com/questions/26516683/reusing-thread-in-loop-c

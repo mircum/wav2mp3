@@ -1,6 +1,6 @@
 # wav2mp3
 This small project was created as a cross-platform (Windows, Linux, MacOS) coding playground. 
-The outcome is a simple, multi-threaded wav to mp3 converter. It is only able to convert RIFF WAVE files with PCM audio format.\
+The outcome is a simple, multi-threaded wav to mp3 converter. It is only able to convert RIFF WAVE files with PCM audio format. Should be considered as WIP (work in progress).\
 For wav to mp3 conversion, it is used lame library 3.99.5. More details here: http://lame.sourceforge.net/download.php
 
 ## Running
@@ -12,7 +12,7 @@ wav2mp3.exe c:\path\to\wave\files
 Some sample wave files can be found here: https://drive.google.com/drive/folders/1P61Joo2x1xIFnML9WVl_GZhqL0H1sBAv?usp=sharing
 
 
-## Compiling yourself
+## Compile it yourself
 
 ## References
 * Thread Pool: https://stackoverflow.com/questions/26516683/reusing-thread-in-loop-c

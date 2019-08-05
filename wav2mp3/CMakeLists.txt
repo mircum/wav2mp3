@@ -21,6 +21,10 @@ if(WAV2MP3_MACOS)
     target_link_libraries(wav2mp3 ${lame_DEFINITIONS}/libmp3lame.a)
 endif(WAV2MP3_MACOS)
 
+if(WAV2MP3_LINUX)
+    target_link_libraries(wav2mp3 ${lame_DEFINITIONS}/libmp3lame.a pthread)
+endif(WAV2MP3_LINUX)
+
 if(WAV2MP3_WINDOWS)
     include_directories(
             "${dirent_win_INCLUDE_DIRS}"

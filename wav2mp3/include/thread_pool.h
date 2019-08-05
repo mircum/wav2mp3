@@ -6,6 +6,7 @@
 #include <queue>
 #include <vector>
 #include <functional>
+#include <condition_variable>
 
 class thread_pool final {
 public:

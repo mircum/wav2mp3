@@ -39,11 +39,11 @@ public:
     void do_encode ();
 
 protected:
-    size_t read_wave_header ();
+    void read_wave_header ();
     bool is_riff ();
     bool is_pcm ();
     void init_lame ();
-    std::string resolve_out_file_name (const std::string &file_name);
+    static std::string resolve_out_file_name (const std::string &file_name);
 
 private:
     bool can_encode_;

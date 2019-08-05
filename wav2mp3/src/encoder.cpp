@@ -7,7 +7,7 @@
 
 #include <sstream>
 #include <thread>
-
+#include <cstring>
 
 #include "logger.h"
 #include "encoder.h"
@@ -84,15 +84,14 @@ encoder::~encoder () {
        fclose (in_);
 }
 
-size_t encoder::read_wave_header () {
+void encoder::read_wave_header () {
 
-    size_t read = 0;
     unsigned char buffer4[4];
     unsigned char buffer2[2];
 
     // read header_ parts
-    read = fread (header_.riff, sizeof (header_.riff), 1, in_);
-    read = fread (buffer4, sizeof (buffer4), 1, in_);
+    fread (header_.riff, sizeof (header_.riff), 1, in_);
+    fread (buffer4, sizeof (buffer4), 1, in_);
 
     // convert little endian to big endian 4 byte int
     header_.overall_size =   buffer4[0]|
@@ -100,49 +99,48 @@ size_t encoder::read_wave_header () {
                              (buffer4[2]<<16u)|
                              (buffer4[3]<<24u);
 
-    read = fread (header_.wave, sizeof (header_.wave), 1, in_);
+    fread (header_.wave, sizeof (header_.wave), 1, in_);
 
-    read = fread (header_.fmt_chunk_marker, sizeof (header_.fmt_chunk_marker), 1, in_);
+    fread (header_.fmt_chunk_marker, sizeof (header_.fmt_chunk_marker), 1, in_);
 
-    read = fread (buffer4, sizeof (buffer4), 1, in_);
+    fread (buffer4, sizeof (buffer4), 1, in_);
     // convert little endian to big endian 4 byte integer
     header_.length_of_fmt =  buffer4[0]|
                              (buffer4[1]<<8u)|
                              (buffer4[2]<<16u)|
                              (buffer4[3]<<24u);
 
-    read = fread (buffer2, sizeof (buffer2), 1, in_);
+    fread (buffer2, sizeof (buffer2), 1, in_);
     header_.format_type = buffer2[0]|(buffer2[1]<<8u);
 
-    read = fread (buffer2, sizeof (buffer2), 1, in_);
+    fread (buffer2, sizeof (buffer2), 1, in_);
     header_.channels = buffer2[0]|(buffer2[1]<<8u);
 
-    read = fread (buffer4, sizeof (buffer4), 1, in_);
+    fread (buffer4, sizeof (buffer4), 1, in_);
     header_.sample_rate = buffer4[0]|
                           (buffer4[1]<<8u)|
                           (buffer4[2]<<16u)|
                           (buffer4[3]<<24u);
 
-    read = fread (buffer4, sizeof (buffer4), 1, in_);
+    fread (buffer4, sizeof (buffer4), 1, in_);
     header_.byterate =   buffer4[0]|
                          (buffer4[1]<<8u)|
                          (buffer4[2]<<16u)|
                          (buffer4[3]<<24u);
 
-    read = fread (buffer2, sizeof (buffer2), 1, in_);
+    fread (buffer2, sizeof (buffer2), 1, in_);
     header_.block_align = buffer2[0]|(buffer2[1]<<8u);
 
-    read = fread (buffer2, sizeof (buffer2), 1, in_);
+    fread (buffer2, sizeof (buffer2), 1, in_);
     header_.bits_per_sample = buffer2[0]|(buffer2[1]<<8u);
 
-    read = fread (header_.data_chunk_header, sizeof (header_.data_chunk_header), 1, in_);
+    fread (header_.data_chunk_header, sizeof (header_.data_chunk_header), 1, in_);
 
-    read = fread (buffer4, sizeof (buffer4), 1, in_);
+    fread (buffer4, sizeof (buffer4), 1, in_);
     header_.data_size =  buffer4[0]|
                          (buffer4[1]<<8u)|
                          (buffer4[2]<<16u)|
                          (buffer4[3]<<24u);
-    return read;
 }
 
 bool encoder::is_riff () {
@@ -173,6 +171,9 @@ void encoder::init_lame () {
     }
 }
 
+// with current implementation, a race might happen on mp3 files
+// a thread might try to read it while another one might want to write into it
+// TODO: to fix the possible race condition
 void encoder::do_encode () {
     if (!can_encode_)
         return;

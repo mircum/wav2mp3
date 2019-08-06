@@ -13,7 +13,7 @@ dir_ (nullptr) {
 
     dir_ = opendir (dir_path.c_str ());
     if (dir_ == nullptr) {
-        throw system_error(ENOTDIR, generic_category (), "Dir could not be opened");
+        throw system_error(ENOTDIR, generic_category (), "DIR could not be opened");
     }
 }
 
@@ -28,7 +28,7 @@ dir_container::const_iterator dir_container::begin () const {
 }
 
 dir_container::const_iterator dir_container::end () const{
-    return {};// dir_container::const_iterator ();
+    return {};
 }
 
 dir_container::const_iterator::const_iterator () :

@@ -15,6 +15,7 @@ public:
         std::string name_;
         bool is_file_;
     };
+
     class const_iterator {
     public:
         const_iterator ();

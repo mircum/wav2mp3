@@ -15,8 +15,8 @@ void wav2mp3 (const string &dir_path, const string &file_name) {
 
 int main (int argc, char *argv[]) {
 
-    if (argc<2) {
-        logger::error ("ERROR: Insufficient parameters. Usage: wav2mp3 path/to/dir");
+    if (argc < 2) {
+        logger::error ("ERROR: Insufficient parameters. \nUsage: wav2mp3 path/to/dir");
         return 1;
     }
 
@@ -34,26 +34,31 @@ int main (int argc, char *argv[]) {
         dir_container dc (dir_path);
         // create a thread_pool with c_threads - 1 number of threads
         // main execution thread should be considered a concurrent activity
-        thread_pool tp (nt-1);
+        thread_pool tp (nt - 1);
 
         for (auto cit : dc) {
             dir_container::entry ent = cit;
             if (!ent.is_file_)
                 continue;
             tp.add_job (bind (wav2mp3, dir_path, ent.name_));
-            //wav2mp3 (dir_path, ent.name_);
+            //wav2mp3 (dir_path, ent.name_); // used for  debugging without mt
         }
     }
     catch (system_error &e) {
         logger::error ("ERROR: " + string (e.what ()));
-
+        return 1;
     }
     catch (runtime_error &e) {
         logger::error ("ERROR: " + string (e.what ()));
-
+        return 1;
+    }
+    catch (invalid_argument &e) {
+        logger::error ("ERROR: " + string (e.what ()));
+        return 1;
     }
     catch (exception &e) {
         logger::error ("ERROR: " + string (e.what ()));
+        return 1;
     }
 
     return 0;

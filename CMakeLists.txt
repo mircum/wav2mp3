@@ -31,22 +31,6 @@ endif()
 set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}")
 set(INSTALL_DIR "${CMAKE_BINARY_DIR}/bin")
 
-
-#test
-if(WAV2MP3_MACOS)
-    message("this is macosx ${CMAKE_INSTALL_PREFIX}")
-endif(WAV2MP3_MACOS)
-if(WAV2MP3_WINDOWS)
-    message("this is windows ${CMAKE_INSTALL_PREFIX}")
-endif(WAV2MP3_WINDOWS)
-if(WAV2MP3_LINUX)
-    message("this is linux ${CMAKE_INSTALL_PREFIX}")
-endif(WAV2MP3_LINUX)
-
-message("${lame_INCLUDE_DIRS}")
-message("def: ${lame_DEFINITIONS}")
-#test
-
 # handle all folders
 add_subdirectory(lame)
 add_subdirectory(dirent_win)
